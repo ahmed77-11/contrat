@@ -1,5 +1,7 @@
 package com.medfactor.contrat.entities;
 
+import com.medfactor.contrat.entities.Contrat;
+import com.medfactor.contrat.entities.TypeDocContrat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +13,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "DocContrat")
+@Table(name="DocContrat" ,uniqueConstraints = @UniqueConstraint(columnNames = {"yContratIdFk","xTypeDocContratIdFk","yDocContratNo"}))
 public class DocContrat {
 
     @Id
@@ -21,20 +23,20 @@ public class DocContrat {
 
     @ManyToOne
     @JoinColumn(name = "yContratIdFk", nullable = false)
-    private Contrat contratId;  
+    private Contrat contratId;
 
     @ManyToOne
     @JoinColumn(name = "xTypeDocContratIdFk",nullable = false)
-    private TypeDocContrat typeDocContrat;  
+    private TypeDocContrat typeDocContrat;
 
     @Column(name = "yDocContratNo", length = 20,nullable = false)
     private String docContratNo;
 
-    @Column(name = "yDocContratDelivDate", length = 8)
-    private String docContratDelivDate;
+    @Column(name = "yDocContratDelivDate")
+    private Date docContratDelivDate;
 
-    @Column(name = "yDocContratExpireDate", length = 8)
-    private String docContratExpireDate;
+    @Column(name = "yDocContratExpireDate")
+    private Date docContratExpireDate;
 
     @Column(name = "yDocContratScanPath", length = 255)
     private String docContratScanPath;
@@ -42,14 +44,14 @@ public class DocContrat {
     @Column(name = "yDocContratScanFileName", length = 64)
     private String docContratScanFileName;
 
-    @Column(name = "yDocContratApprobationDate", length = 8)
-    private String docContratApprobationDate;
+    @Column(name = "yDocContratApprobationDate")
+    private Date docContratApprobationDate;
 
-    @Column(name = "yDocContratEffetDate", length = 8)
-    private String docContratEffetDate;
+    @Column(name = "yDocContratEffetDate")
+    private Date docContratEffetDate;
 
-    @Column(name = "yDocContratRelanceDate", length = 8)
-    private String docContratRelanceDate;
+    @Column(name = "yDocContratRelanceDate")
+    private Date docContratRelanceDate;
 
 
     @Column(name="sysUserId", nullable = false)
@@ -64,7 +66,6 @@ public class DocContrat {
     @Column(name = "sysAdresseIp", length = 32, nullable = false)
     private String sysAdresseIp;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sysDate", nullable = false)
-    private Date sysDate;
+    private Date sysDate=new Date();
 }

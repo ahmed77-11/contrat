@@ -25,11 +25,11 @@ public class TypeDocRemise {
     @Column(name = "xTypeDocRemiseDsg", nullable = false, length = 64)
     private String dsg;
 
-    @Column(name = "xTypeDocRemiseBoolMaitre", nullable = false, length = 1)
-    private String boolMaitre;
+    @Column(name = "xTypeDocRemiseBoolMaitre", nullable = false)
+    private boolean boolMaitre;
 
-    @Column(name = "xTypeDocRemiseBoolDetail", nullable = false, length = 1)
-    private String boolDetail;
+    @Column(name = "xTypeDocRemiseBoolDetail", nullable = false)
+    private boolean boolDetail;
     @Column(name="sysUserId", nullable = false)
     private Long sysUserId;
 
@@ -42,7 +42,6 @@ public class TypeDocRemise {
     @Column(name = "sysAdresseIp", nullable = false, length = 32)
     private String sysAdresseIp;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sysDate", nullable = false)
-    private Date sysDate;
+    private Date sysDate=new Date();
 }

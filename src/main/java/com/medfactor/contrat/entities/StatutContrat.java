@@ -1,7 +1,5 @@
 package com.medfactor.contrat.entities;
 
-import java.sql.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,9 +8,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "StatutContrat")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class StatutContrat {
 
     @Id
@@ -20,7 +26,7 @@ public class StatutContrat {
     @Column(name = "xStatutContratIdFk")
     private Long StatutContratId;
 
-    @Column(name = "xStatutContratCode", length = 8, nullable = false)
+    @Column(name = "xStatutContratCode", length = 8, nullable = false,unique=true)
     private String codeContrat;
 
     @Column(name = "xStatutContratDsg", length = 64, nullable = false)
@@ -36,7 +42,6 @@ public class StatutContrat {
     @Column(name = "sysAdresseIp", length = 32, nullable = false)
     private String sysAdresseIp;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sysDate", nullable = false)
-    private Date sysDate;
+    private java.util.Date sysDate=new Date();
 }

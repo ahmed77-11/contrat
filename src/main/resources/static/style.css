@@ -1,0 +1,103 @@
+/*!* General Styles *!*/
+/*body {*/
+/*    padding: 0;*/
+/*    margin: 0;*/
+/*    font-family: Georgia, Cambria, "Times New Roman", Times, serif;*/
+/*    color: #000;*/
+/*    background-color: #000000;*/
+/*    line-height: 1.6;*/
+/*}*/
+
+/** {*/
+/*    box-sizing: border-box;*/
+/*}*/
+
+/*!* Main container *!*/
+/*main {*/
+/*    width: 100%;*/
+/*    padding: 20px;*/
+/*    text-align: center;*/
+/*}*/
+
+/*!* Contract Article *!*/
+/*article#contract {*/
+/*    width: 600px;*/
+/*    margin: 30px auto;*/
+/*    padding: 30px 50px 60px;*/
+/*    background-color: #fff;*/
+/*}*/
+
+/*!* Header *!*/
+/*.contract-header {*/
+/*    border-bottom: 2px solid #333695;*/
+/*    padding-bottom: 10px;*/
+/*    margin-bottom: 20px;*/
+/*}*/
+/*.contract-header h1 {*/
+/*    font-size: 32px;*/
+/*    color: #333695;*/
+/*    margin: 0 0 10px;*/
+/*}*/
+
+/*!* Meta information *!*/
+/*.contract-meta p {*/
+/*    margin: 4px 0;*/
+/*    font-size: 16px;*/
+/*}*/
+
+/*!* Section Titles *!*/
+/*h2 {*/
+/*    font-size: 24px;*/
+/*    color: #333695;*/
+/*    border-bottom: 1px solid #ccc;*/
+/*    padding-bottom: 8px;*/
+/*    margin-bottom: 16px;*/
+/*}*/
+
+/*!* Section content *!*/
+/*section {*/
+/*    margin-bottom: 30px;*/
+/*}*/
+/*section ul {*/
+/*    list-style: none;*/
+/*    padding: 0;*/
+/*    text-align: left;*/
+/*}*/
+/*section ul li {*/
+/*    margin-bottom: 8px;*/
+/*    font-size: 16px;*/
+/*}*/
+
+/*!* Signature Section *!*/
+/*.contract-signature {*/
+/*    margin-top: 40px;*/
+/*    border-top: 2px solid #333;*/
+/*    padding-top: 20px;*/
+/*}*/
+
+/*!* Debug Section *!*/
+/*.contract-debug {*/
+/*    margin-top: 40px;*/
+/*    font-size: 14px;*/
+/*    color: #555;*/
+/*    background: #f9f9f9;*/
+/*    padding: 10px;*/
+/*    border: 1px dashed #ccc;*/
+/*}*/
+
+/*!* Print Styles *!*/
+/*@media print {*/
+/*    body {*/
+/*        font-size: 100%;*/
+/*    }*/
+/*    article#contract {*/
+/*        width: 600px;*/
+/*        margin: 0 auto;*/
+/*    }*/
+/*    h2 {*/
+/*        page-break-before: always;*/
+/*    }*/
+/*    pre, blockquote {*/
+/*        page-break-inside: avoid;*/
+/*    }*/
+/*}*/

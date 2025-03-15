@@ -2,11 +2,17 @@ package com.medfactor.contrat.entities;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
-@Table(name = "xDevise")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="xDevise" ,uniqueConstraints = @UniqueConstraint(columnNames = {"xDeviseCodeNum","xDeviseCodeAlpha"}))
 public class Devise {
 
     @Id
@@ -35,9 +41,8 @@ public class Devise {
     @Column(name = "sysAdresseIp", length = 32, nullable = false)
     private String sysAdresseIp;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sysDate", nullable = false)
-    private Date sysDate;
+    private java.util.Date sysDate=new Date();
 
 
 

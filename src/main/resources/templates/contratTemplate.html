@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Contrat d'Affacturage</title>
+    <!-- Note: The CSS file is referenced relatively; ensure your PDF renderer’s base URL resolves it correctly -->
+    <link rel="stylesheet" href="../static/style.css"/>
+</head>
+<body>
+<main>
+    <article id="contract" >
+        <!-- Header Section -->
+        <header class="contract-header">
+            <h1>Contrat d'Affacturage</h1>
+            <div class="contract-meta">
+                <p>Contrat N°:
+                    <strong th:text="${contractData.contratNo != null ? contractData.contratNo : '[Numéro non spécifié]'}">[Numéro]</strong>
+                </p>
+                <p>Ancien Contrat N°:
+                    <strong th:text="${contractData.contratOldNo != null ? contractData.contratOldNo : '[Ancien Numéro non spécifié]'}">[Ancien Numéro]</strong>
+                </p>
+                <p>
+                    Rédigé par:
+<!--                    <span th:if="${contractData.contratEtape1RedacteurNom != null and !contractData.contratEtape1RedacteurNom.isEmpty()}"-->
+<!--                          th:text="${contractData.contratEtape1RedacteurNom}">[Rédacteur]</span>-->
+<!--                    <span th:if="${contractData.contratEtape1RedacteurNom == null or contractData.contratEtape1RedacteurNom.isEmpty()}"-->
+<!--                          th:text="'[Rédacteur non spécifié]'">[Rédacteur non spécifié]</span>-->
+<!--                    le-->
+<!--                    <span th:text="${contractData.contratEtape1RedacteurDate != null ? #dates.format(contractData.contratEtape1RedacteurDate, 'dd/MM/yyyy') : '[Date non spécifiée]'}">[Date]</span>-->
+                </p>
+            </div>
+        </header>
+
+        <!-- Section 1: Objet du Contrat -->
+        <section class="contract-object">
+            <h2>Objet du Contrat</h2>
+            <p>
+                Ce contrat définit les conditions d'affacturage entre l'Adhérent et Med Factor.
+                Le financement total prévu est de
+                <strong th:text="${contractData.contratPrevChiffreTotal != null ? contractData.contratPrevChiffreTotal : '[Montant non spécifié]'}">[Montant]</strong>.
+            </p>
+        </section>
+
+        <!-- Section 2: Détails Financiers -->
+        <section class="contract-financial">
+            <h2>Détails Financiers</h2>
+            <ul>
+                <li>Montant local: <strong th:text="${contractData.contratPrevChiffreLocal != null ? contractData.contratPrevChiffreLocal : '[Montant local non spécifié]'}">[Montant Local]</strong></li>
+                <li>Montant export: <strong th:text="${contractData.contratPrevChiffreExport != null ? contractData.contratPrevChiffreExport : '[Montant export non spécifié]'}">[Montant Export]</strong></li>
+                <li>Taux de concentration: <strong th:text="${contractData.contratTauxConcentration != null ? contractData.contratTauxConcentration : '[Taux non spécifié]'}">[Taux]</strong>%</li>
+                <li>Délai maximal de paiement: <strong th:text="${contractData.contratDelaiMaxPai != null ? contractData.contratDelaiMaxPai : '[Jours non spécifiés]'}">[Jours]</strong> jours</li>
+                <li>Limite de financement: <strong th:text="${contractData.contratLimiteFinAuto != null ? contractData.contratLimiteFinAuto : '[Limite non spécifiée]'}">[Montant]</strong></li>
+            </ul>
+        </section>
+
+        <!-- Section 3: Comités -->
+        <section class="contract-committees">
+            <h2>Comités</h2>
+            <ul>
+                <li>Comité des risques: <span th:text="${contractData.contratComiteRisqueTexte != null ? contractData.contratComiteRisqueTexte : '[Texte non spécifié]'}">[Texte]</span></li>
+                <li>Comité de dérogation: <span th:text="${contractData.contratComiteDerogTexte != null ? contractData.contratComiteDerogTexte : '[Texte non spécifié]'}">[Texte]</span></li>
+            </ul>
+        </section>
+
+        <!-- Section 4: Dates et Actions -->
+        <section class="contract-dates">
+            <h2>Dates et Actions</h2>
+            <ul>
+                <li>Date d'acceptation de remise:
+                    <strong th:text="${contractData.contratAcceptRemiseDate != null ? #dates.format(contractData.contratAcceptRemiseDate, 'dd/MM/yyyy') : '[Date non spécifiée]'}">[Date]</strong>
+                </li>
+                <li>Date de résiliation:
+                    <strong th:text="${contractData.contratResiliationDate != null ? #dates.format(contractData.contratResiliationDate, 'dd/MM/yyyy') : '[Date non spécifiée]'}">[Date]</strong>
+                </li>
+                <li>Motif de résiliation:
+                    <strong th:text="${contractData.contratResiliationTexte != null ? contractData.contratResiliationTexte : '[Motif non spécifié]'}">[Texte]</strong>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Section 5: Informations Générales -->
+        <section class="contract-general">
+            <h2>Informations Générales</h2>
+            <ul>
+                <li>Type de Factoring:
+                    <strong th:text="${contractData.typeFactoring != null ? contractData.typeFactoring.dsg : '[Type non spécifié]'}">[Type]</strong>
+                </li>
+                <li>Code Factoring:
+                    <strong th:text="${contractData.typeFactoring != null ? contractData.typeFactoring.code : '[Code non spécifié]'}">[Code]</strong>
+                </li>
+                <li>Exige Assurance:
+                    <strong th:text="${contractData.typeFactoring != null ? contractData.typeFactoring.boolExigeAssur : '[Non spécifié]'}">[Assurance]</strong>
+                </li>
+                <li>Devise:
+                    <strong th:text="${contractData.devise != null ? contractData.devise.codeAlpha : '[Devise non spécifiée]'}">[Devise]</strong>
+                </li>
+                <li>
+                    Autres paramètres:
+                    <ul>
+                        <li>tmm: <strong th:text="${contractData.tmm}">[tmm]</strong></li>
+                        <li>contratTmm: <strong th:text="${contractData.contratTmm}">[contratTmm]</strong></li>
+                        <li>contratMargeFin: <strong th:text="${contractData.contratMargeFin}">[Marge Fin]</strong></li>
+                        <li>contratMargeRet: <strong th:text="${contractData.contratMargeRet}">[Marge Ret]</strong></li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Section 6: Signature -->
+        <section class="contract-signature">
+            <h2>Signature</h2>
+<!--            <p>Fait le:-->
+<!--                <strong th:text="${contractData.contratEtape1RedacteurDate != null ? #dates.format(contractData.contratEtape1RedacteurDate, 'dd/MM/yyyy') : '[Date non spécifiée]'}">[Date]</strong>-->
+<!--            </p>-->
+<!--            <p>Rédacteur:-->
+<!--                <span th:if="${contractData.contratEtape1RedacteurNom != null and !contractData.contratEtape1RedacteurNom.isEmpty()}"-->
+<!--                      th:text="${contractData.contratEtape1RedacteurNom}">[Rédacteur]</span>-->
+<!--                <span th:if="${contractData.contratEtape1RedacteurNom == null or contractData.contratEtape1RedacteurNom.isEmpty()}"-->
+<!--                      th:text="'[Rédacteur non spécifié]'">[Rédacteur non spécifié]</span>-->
+<!--            </p>-->
+        </section>
+
+        <!-- Debug section (remove for production) -->
+        <section class="contract-debug">
+            <h2>Debug Information</h2>
+            <p th:text="${contractData}">Contract Data Debug</p>
+        </section>
+
+    </article>
+</main>
+</body>
+</html>

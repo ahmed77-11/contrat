@@ -1,10 +1,17 @@
 package com.medfactor.contrat.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
 @Entity
 @Table(name = "xTypeFactoring")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TypeFactoring {
 
     @Id
@@ -12,14 +19,14 @@ public class TypeFactoring {
     @Column(name = "xTypeFactoringId")
     private Long id;
 
-    @Column(name = "xTypeFactoringCode", length = 8, nullable = false)
+    @Column(name = "xTypeFactoringCode", length = 8,unique=true, nullable = false)
     private String code;
 
-    @Column(name = "xTypeFactoringDsg", length = 8, nullable = false)
+    @Column(name = "xTypeFactoringDsg", length = 64, nullable = false)
     private String dsg;
 
-    @Column(name = "xTypeFactoringBoolRecours", length = 1, nullable = false)
-    private char boolExigeAssur;
+    @Column(name = "xTypeFactoringBoolRecours", nullable = false)
+    private boolean boolExigeAssur;
 
 
     @Column(name="sysUserId", nullable = false)
@@ -33,12 +40,11 @@ public class TypeFactoring {
     @Column(name = "sysAdresseIp", length = 32, nullable = false)
     private String sysAdresseIp;
 
-    
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "sysDate", nullable = false)
-    private Date sysDate;
 
-    
+    @Column(name = "sysDate", nullable = false)
+    private Date sysDate=new Date();
+
+
 
 
 }

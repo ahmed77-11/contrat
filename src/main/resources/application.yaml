@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: contrat-api
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: contrat-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.medfactor.contrat.dtos.TaskAction
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Med_FactorContractDB
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  main:
+    allow-circular-references: true
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 5000
+            read-timeout: 5000
+            logger-level: full
+            requestInterceptors:
+              - com.medfactor.contrat.security.FeignConfig
+
+server:
+  servlet:
+    context-path: /factoring/contrat
+  port: 8083
+
+camunda:
+  bpm:
+    admin-user:
+      id: admin
+      password: admin
+    webapp:
+      index-redirect-enabled: true
+      enabled: true
+
+jwt:
+  secret: 3bf931954823703c1ce3ecd6495539cbaa024c6f76fd5f1c025c863d059a203faf0d14995afd1047e1f373211e863c5ee399ca045cd2de78ce194887547faaf1
+  expiration: 172800000
+
+cookie:
+  maxAge: 172800000
+
+#logging:
+#  level:
+#    org.apache.kafka: DEBUG
+#    org.springframework.kafka: DEBUG

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" targetNamespace="http://camunda.org/examples" exporter="Camunda Modeler" exporterVersion="5.31.0">
+  <process id="contract-creation-process" name="Processus de Création de Contrat" isExecutable="true" camunda:historyTimeToLive="6000">
+    <startEvent id="StartEvent_1" name="Démarrer le processus" camunda:initiator="initiator">
+      <outgoing>SequenceFlow_1</outgoing>
+    </startEvent>
+    <userTask id="UserTask_FillContractForm" name="Remplir le formulaire du contrat" camunda:assignee="${initiator}">
+      <incoming>SequenceFlow_1</incoming>
+      <outgoing>SequenceFlow_2</outgoing>
+    </userTask>
+    <serviceTask id="ServiceTask_GeneratePDF" name="Générer le PDF" camunda:delegateExpression="${generatePDFDelegate}">
+      <extensionElements />
+      <incoming>SequenceFlow_2</incoming>
+      <incoming>SequenceFlow_11</incoming>
+      <outgoing>Flow_1dwd2ah</outgoing>
+    </serviceTask>
+    <userTask id="UserTask_ReviewJuridique" name="Revue par le Responsable Juridique" camunda:candidateGroups="ROLE_RES_JURIDIQUE">
+      <extensionElements>
+        <camunda:taskListener class="com.medfactor.contrat.listeners.JuridiqueTaskListener" event="create" />
+        <camunda:taskListener class="com.medfactor.contrat.listeners.JuridiqueTaskListener" event="complete" />
+      </extensionElements>
+      <incoming>Flow_1j3btuj</incoming>
+      <outgoing>Flow_0210zh5</outgoing>
+    </userTask>
+    <exclusiveGateway id="Gateway_JuridiqueDecision" name="Décision du Responsable Juridique">
+      <extensionElements>
+        <camunda:taskListener class="com.medfactor.contrat.listeners.JuridiqueTaskListener" event="create" />
+        <camunda:taskListener class="com.medfactor.contrat.listeners.JuridiqueTaskListener" event="complete" />
+      </extensionElements>
+      <incoming>Flow_0yzfr1p</incoming>
+      <outgoing>SequenceFlow_5</outgoing>
+      <outgoing>Flow_1j3btuj</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_5" sourceRef="Gateway_JuridiqueDecision" targetRef="UserTask_ModifyContractForm">
+      <conditionExpression xsi:type="tFormalExpression">${validatorDecision == 'reject'}</conditionExpression>
+    </sequenceFlow>
+    <userTask id="UserTask_ReviewValidator" name="Revue par le Validateur" camunda:candidateGroups="ROLE_VALIDATEUR">
+      <extensionElements>
+        <camunda:taskListener class="com.medfactor.contrat.listeners.ValidateurTaskListener" event="create" />
+        <camunda:taskListener class="com.medfactor.contrat.listeners.ValidateurTaskListener" event="complete" />
+      </extensionElements>
+      <incoming>Flow_1dwd2ah</incoming>
+      <outgoing>Flow_0yzfr1p</outgoing>
+    </userTask>
+    <exclusiveGateway id="Gateway_ValidatorDecision" name="Décision du Validateur">
+      <extensionElements>
+        <camunda:taskListener class="com.medfactor.contrat.listeners.ValidateurTaskListener" event="create" />
+        <camunda:taskListener class="com.medfactor.contrat.listeners.ValidateurTaskListener" event="complete" />
+      </extensionElements>
+      <incoming>Flow_0210zh5</incoming>
+      <outgoing>SequenceFlow_9</outgoing>
+      <outgoing>SequenceFlow_8</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_9" sourceRef="Gateway_ValidatorDecision" targetRef="ServiceTask_UpdateDBStatus">
+      <conditionExpression xsi:type="tFormalExpression">${reviewDecision == 'accept'}</conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="ServiceTask_UpdateDBStatus" name="Mettre à jour le statut du contrat" camunda:class="com.medfactor.contrat.service.ValidatedTheContractService">
+      <incoming>SequenceFlow_9</incoming>
+      <outgoing>Flow_0ytaaep</outgoing>
+    </serviceTask>
+    <endEvent id="EndEvent_1" name="Fin du processus">
+      <incoming>Flow_0ytaaep</incoming>
+    </endEvent>
+    <userTask id="UserTask_ModifyContractForm" name="Modifier le formulaire du contrat" camunda:assignee="${initiator}">
+      <extensionElements>
+        <camunda:taskListener class="com.medfactor.contrat.listeners.ModifyTaskListener" event="create" />
+      </extensionElements>
+      <incoming>SequenceFlow_5</incoming>
+      <incoming>SequenceFlow_8</incoming>
+      <outgoing>SequenceFlow_11</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="UserTask_FillContractForm" />
+    <sequenceFlow id="SequenceFlow_2" sourceRef="UserTask_FillContractForm" targetRef="ServiceTask_GeneratePDF" />
+    <sequenceFlow id="SequenceFlow_11" sourceRef="UserTask_ModifyContractForm" targetRef="ServiceTask_GeneratePDF" />
+    <sequenceFlow id="Flow_0ytaaep" sourceRef="ServiceTask_UpdateDBStatus" targetRef="EndEvent_1" />
+    <sequenceFlow id="SequenceFlow_8" sourceRef="Gateway_ValidatorDecision" targetRef="UserTask_ModifyContractForm">
+      <conditionExpression xsi:type="tFormalExpression">${reviewDecision == 'reject'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_1dwd2ah" sourceRef="ServiceTask_GeneratePDF" targetRef="UserTask_ReviewValidator" />
+    <sequenceFlow id="Flow_0yzfr1p" sourceRef="UserTask_ReviewValidator" targetRef="Gateway_JuridiqueDecision" />
+    <sequenceFlow id="Flow_1j3btuj" sourceRef="Gateway_JuridiqueDecision" targetRef="UserTask_ReviewJuridique">
+      <conditionExpression xsi:type="tFormalExpression">${validatorDecision == 'accept'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_0210zh5" sourceRef="UserTask_ReviewJuridique" targetRef="Gateway_ValidatorDecision" />
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_contract">
+    <bpmndi:BPMNPlane id="BPMNPlane_contract" bpmnElement="contract-creation-process">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="142" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="131" y="318" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_FillContractForm_di" bpmnElement="UserTask_FillContractForm">
+        <dc:Bounds x="260" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_GeneratePDF_di" bpmnElement="ServiceTask_GeneratePDF">
+        <dc:Bounds x="420" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_ReviewJuridique_di" bpmnElement="UserTask_ReviewJuridique">
+        <dc:Bounds x="850" y="240" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_JuridiqueDecision_di" bpmnElement="Gateway_JuridiqueDecision" isMarkerVisible="true">
+        <dc:Bounds x="705" y="255" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1007" y="220" width="65" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_ReviewValidator_di" bpmnElement="UserTask_ReviewValidator">
+        <dc:Bounds x="580" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_ValidatorDecision_di" bpmnElement="Gateway_ValidatorDecision" isMarkerVisible="true">
+        <dc:Bounds x="1025" y="265" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="651" y="266" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_UpdateDBStatus_di" bpmnElement="ServiceTask_UpdateDBStatus">
+        <dc:Bounds x="1240" y="278" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1592" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1568" y="288" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_ModifyContractForm_di" bpmnElement="UserTask_ModifyContractForm">
+        <dc:Bounds x="660" y="520" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_5_di" bpmnElement="SequenceFlow_5">
+        <di:waypoint x="730" y="305" />
+        <di:waypoint x="730" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_9_di" bpmnElement="SequenceFlow_9">
+        <di:waypoint x="1070" y="295" />
+        <di:waypoint x="1153" y="295" />
+        <di:waypoint x="1153" y="313" />
+        <di:waypoint x="1240" y="313" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1_di" bpmnElement="SequenceFlow_1">
+        <di:waypoint x="178" y="299" />
+        <di:waypoint x="233" y="299" />
+        <di:waypoint x="233" y="302" />
+        <di:waypoint x="260" y="302" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_2_di" bpmnElement="SequenceFlow_2">
+        <di:waypoint x="360" y="300" />
+        <di:waypoint x="420" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_11_di" bpmnElement="SequenceFlow_11">
+        <di:waypoint x="660" y="560" />
+        <di:waypoint x="470" y="560" />
+        <di:waypoint x="470" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ytaaep_di" bpmnElement="Flow_0ytaaep">
+        <di:waypoint x="1340" y="318" />
+        <di:waypoint x="1426" y="318" />
+        <di:waypoint x="1426" y="330" />
+        <di:waypoint x="1592" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_8_di" bpmnElement="SequenceFlow_8">
+        <di:waypoint x="1050" y="315" />
+        <di:waypoint x="1050" y="560" />
+        <di:waypoint x="760" y="564" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dwd2ah_di" bpmnElement="Flow_1dwd2ah">
+        <di:waypoint x="460" y="260" />
+        <di:waypoint x="460" y="120" />
+        <di:waypoint x="580" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yzfr1p_di" bpmnElement="Flow_0yzfr1p">
+        <di:waypoint x="680" y="120" />
+        <di:waypoint x="730" y="120" />
+        <di:waypoint x="730" y="255" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j3btuj_di" bpmnElement="Flow_1j3btuj">
+        <di:waypoint x="755" y="280" />
+        <di:waypoint x="850" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0210zh5_di" bpmnElement="Flow_0210zh5">
+        <di:waypoint x="950" y="280" />
+        <di:waypoint x="983" y="280" />
+        <di:waypoint x="983" y="290" />
+        <di:waypoint x="1025" y="290" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

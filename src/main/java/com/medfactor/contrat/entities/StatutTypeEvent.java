@@ -37,7 +37,6 @@ public class StatutTypeEvent {
     @Column(name = "sysAdresseIp", nullable = false, length = 32)
     private String sysAdresseIp;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sysDate", nullable = false)
-    private Date sysDate;
+    private Date sysDate=new Date();
 }
